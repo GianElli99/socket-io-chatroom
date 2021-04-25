@@ -67,17 +67,24 @@
       var form = document.getElementById('form');
       var input = document.getElementById('input');
 
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const nickname = urlParams.get('nickname');
+
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         if (input.value) {
-          socket.emit('chat message', input.value);
+          socket.emit('chat message', {
+            msg: input.value,
+            nickname: nickname,
+          });
           input.value = '';
         }
       });
 
       socket.on('chat message', (msg) => {
         var item = document.createElement('li');
-        item.textContent = msg;
+        item.textContent = msg.nickname + ': ' + msg.msg;
         messages.appendChild(item);
       });
     </script>
