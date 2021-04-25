@@ -56,6 +56,9 @@
     </style>
   </head>
   <body>
+    <div>
+      <p id="users"></p>
+    </div>
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
@@ -86,6 +89,11 @@
         var item = document.createElement('li');
         item.textContent = msg.nickname + ': ' + msg.msg;
         messages.appendChild(item);
+      });
+
+      socket.on('active users', (cant) => {
+        var users = document.getElementById('users');
+        users.textContent = 'Active users: ' + cant;
       });
     </script>
   </body>

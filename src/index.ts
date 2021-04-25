@@ -6,6 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+let activeUsers = 0;
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/frontend/nickname.html');
 });
@@ -16,9 +18,13 @@ app.get('/chat', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('User Connected');
+  activeUsers++;
+  io.emit('active users', activeUsers);
 
   socket.on('disconnect', () => {
     console.log('User Disconnected');
+    activeUsers--;
+    io.emit('active users', activeUsers);
   });
 
   socket.on('chat message', (msg) => {
