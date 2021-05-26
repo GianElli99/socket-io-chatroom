@@ -18,7 +18,14 @@ app.get('/chat', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('User Connected');
+  console.log(socket.id);
   activeUsers++;
+  const newUser = {
+    activeUsers,
+    user: {
+      id: socket.id,
+    },
+  };
   io.emit('active users', activeUsers);
 
   socket.on('disconnect', () => {
@@ -27,8 +34,12 @@ io.on('connection', (socket) => {
     io.emit('active users', activeUsers);
   });
 
+  socket.on('joinear room', (roomId) => {
+    socket.join(roomId);
+  });
+
   socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+    io.to(msg.toRoom).emit('chat message', msg);
   });
 });
 
